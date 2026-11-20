@@ -1,0 +1,48 @@
+{
+ "total_s": 0.7,
+ "samples": 70,
+ "top": [
+  {
+   "share": 62.9,
+   "func": "Runner.run",
+   "where": "6-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py:118"
+  },
+  {
+   "share": 4.3,
+   "func": "Connection.execute",
+   "where": "v/lib/python3.12/site-packages/asyncpg/connection.py:377"
+  },
+  {
+   "share": 4.3,
+   "func": "wrap_app_handling_exceptions.<locals>.wrapped_app",
+   "where": "on3.12/site-packages/starlette/_exception_handler.py:42"
+  },
+  {
+   "share": 4.3,
+   "func": "PreparedStatement.__do_execute",
+   "where": "ib/python3.12/site-packages/asyncpg/prepared_stmt.py:257"
+  },
+  {
+   "share": 1.4,
+   "func": "Event.__init__",
+   "where": "python3.12/site-packages/anyio/_backends/_asyncio.py:1792"
+  },
+  {
+   "share": 1.4,
+   "func": "block_content",
+   "where": "z/my-project/svc/api/app/templates/appointments.html:53"
+  },
+  {
+   "share": 1.4,
+   "func": "_TrustedHosts.__contains__",
+   "where": "12/site-packages/uvicorn/middleware/proxy_headers.py:118"
+  },
+  {
+   "share": 1.4,
+   "func": "Context.call",
+   "where": ".venv/lib/python3.12/site-packages/jinja2/runtime.py:303"
+  }
+ ],
+ "stacks_with_my_appointments": 11,
+ "conditions": "heavy 8 rps (предел тяжёлой операции), 15 с, 100 Гц"
+}
