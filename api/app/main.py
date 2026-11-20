@@ -17,6 +17,9 @@ from fastapi.templating import Jinja2Templates
 
 from . import pages
 from .db import engine
+from .dbstats import attach
+
+attach(engine)
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s %(levelname)s %(name)s %(message)s")

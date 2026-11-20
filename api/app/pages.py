@@ -4,30 +4,49 @@
 возникают узкие места третьего задания: чтение связанных сущностей
 в цикле и подсчёт в коде приложения. В ДЗ 1 они только измеряются.
 """
+import json
 import logging
+import os
 from datetime import date, datetime, timedelta
 
-from fastapi import Depends, Form, Request
+from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .db import get_session
-from .dbstats import reset, snapshot
+from . import dbstats
 
 log = logging.getLogger("booking")
 templates: Jinja2Templates | None = None
 
 PAGE_SIZE = 20
 
-from fastapi import APIRouter  # noqa: E402
-
 router = APIRouter()
+
+DB_STATS = os.environ.get("DB_STATS", "") == "1"
+
+
+def _stats_response(response):
+    """Прикрепить статистику обращений к базе за операцию (для sloi.py).
+
+    Включается переменной DB_STATS=1; под нагрузкой выключен — счётчик
+    не должен портить замеры ДЗ 2.
+    """
+    if DB_STATS:
+        response.headers["X-DB-Stats"] = json.dumps(dbstats.snapshot())
+    return response
 
 
 async def current_user(request: Request, session: AsyncSession):
-    """Пользователь по куке сессии. Нет куки — нет пользователя."""
+    """Пользователь по куке сессии. Нет куки — нет пользователя.
+
+    Счётчик обращений к базе обнуляется здесь: каждый обработчик начинает
+    с current_user, и к концу операции в счётчике — все её обращения.
+    """
+    if DB_STATS:
+        dbstats.reset()
     login = request.cookies.get("booking_user")
     if not login:
         return None
@@ -38,8 +57,9 @@ async def current_user(request: Request, session: AsyncSession):
 
 
 def render(request, name, user, **context):
-    return templates.TemplateResponse(
+    response = templates.TemplateResponse(
         request, name, {"user": user, **context})
+    return _stats_response(response)
 
 
 # ────────────────────────────── вход и выход ───────────────────────────────
