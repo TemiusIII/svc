@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Специалисты{% endblock %}
+{% block content %}
+<h1>Специалисты</h1>
+<form class="filters" method="get" action="/specialists">
+  <select name="speciality">
+    <option value="">— все специальности —</option>
+    {% for sp in specialities %}
+    <option value="{{ sp }}" {% if sp == speciality %}selected{% endif %}>{{ sp }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Отфильтровать</button>
+</form>
+<table>
+  <tr><th>№</th><th>ФИО</th><th>Специальность</th></tr>
+  {% for s in items %}
+  <tr><td><a href="/specialists/{{ s.id }}">{{ s.id }}</a></td><td>{{ s.full_name }}</td><td>{{ s.speciality }}</td></tr>
+  {% endfor %}
+</table>
+<p class="muted">Показано {{ items | length }} из {{ total }} · страница {{ page }} из {{ pages }}</p>
+<div class="pager">
+  {% if page > 1 %}<a href="/specialists?page={{ page - 1 }}&speciality={{ speciality }}">&larr; назад</a>{% endif %}
+  {% if page < pages %}<a href="/specialists?page={{ page + 1 }}&speciality={{ speciality }}">вперёд &rarr;</a>{% endif %}
+</div>
+{% endblock %}

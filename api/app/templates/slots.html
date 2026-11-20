@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Свободные слоты{% endblock %}
+{% block content %}
+<h1>Свободные слоты</h1>
+<p>Услуга: <strong>{{ service.name }}</strong> ({{ service.duration_min }} мин) ·
+   неделя с {{ date_from }} · найдено: {{ slots | length }}</p>
+<form class="filters" method="get" action="/slots">
+  <input type="hidden" name="service" value="{{ service.id }}">
+  <label>с даты: <input type="date" name="from" value="{{ date_from }}"></label>
+  <button type="submit">Обновить</button>
+</form>
+<table>
+  <tr><th>Начало</th><th>Конец</th><th>Специалист</th><th></th></tr>
+  {% for s in slots %}
+  <tr>
+    <td>{{ s.starts_at.strftime('%d.%m.%Y %H:%M') }}</td>
+    <td>{{ s.ends_at.strftime('%H:%M') }}</td>
+    <td>{{ s.specialist_name }} <span class="muted">({{ s.speciality }})</span></td>
+    <td>
+      <form method="post" action="/book" class="inline">
+        <input type="hidden" name="slot_id" value="{{ s.id }}">
+        <input type="hidden" name="client_name" value="{{ user.full_name }}">
+        <button class="primary" type="submit">Записаться</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="4">Свободных слотов на неделе нет</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

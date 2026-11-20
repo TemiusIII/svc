@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Мои записи{% endblock %}
+{% block content %}
+<h1>Мои записи</h1>
+<table>
+  <tr><th>№</th><th>Услуга</th><th>Специалист</th><th>Начало</th><th>Статус</th><th></th></tr>
+  {% for a in items %}
+  <tr>
+    <td>{{ a.id }}</td>
+    <td>{{ a.service_name }}</td>
+    <td>{{ a.specialist_name }}</td>
+    <td>{{ a.starts_at.strftime('%d.%m.%Y %H:%M') }}</td>
+    <td>{{ a.status }}</td>
+    <td>
+      {% if a.status == 'booked' %}
+      <form method="post" action="/cancel" class="inline">
+        <input type="hidden" name="appointment_id" value="{{ a.id }}">
+        <button class="danger" type="submit">Отменить</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6">Записей нет</td></tr>
+  {% endfor %}
+</table>
+<p class="muted">Показано {{ items | length }} из {{ total }} · страница {{ page }} из {{ pages }}</p>
+<div class="pager">
+  {% if page > 1 %}<a href="/appointments?page={{ page - 1 }}">&larr; назад</a>{% endif %}
+  {% if page < pages %}<a href="/appointments?page={{ page + 1 }}">вперёд &rarr;</a>{% endif %}
+</div>
+{% endblock %}

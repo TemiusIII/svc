@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Карточка специалиста{% endblock %}
+{% block content %}
+<h1>{{ person.full_name }}</h1>
+<p class="muted">Специальность: {{ person.speciality }}</p>
+<h2>Услуги</h2>
+<table>
+  <tr><th>Услуга</th><th>Длительность</th><th></th></tr>
+  {% for s in services %}
+  <tr><td>{{ s.name }}</td><td>{{ s.duration_min }} мин</td>
+      <td><form method="get" action="/slots"><input type="hidden" name="service" value="{{ s.id }}"><button type="submit">слоты</button></form></td></tr>
+  {% endfor %}
+</table>
+<h2>Последние записи</h2>
+<table>
+  <tr><th>№</th><th>Начало</th><th>Услуга</th><th>Статус</th></tr>
+  {% for a in upcoming %}
+  <tr><td>{{ a.id }}</td><td>{{ a.starts_at.strftime('%d.%m.%Y %H:%M') }}</td><td>{{ a.service_name }}</td><td>{{ a.status }}</td></tr>
+  {% else %}
+  <tr><td colspan="4">Записей нет</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Услуги{% endblock %}
+{% block content %}
+<h1>Услуги</h1>
+<p>Выберите услугу, чтобы посмотреть свободные слоты на ближайшую неделю.</p>
+<div class="cards">
+{% for s in services %}
+  <div class="card">
+    <h3>{{ s.name }}</h3>
+    <p class="muted">{{ s.duration_min }} мин</p>
+    <form method="get" action="/slots">
+      <input type="hidden" name="service" value="{{ s.id }}">
+      <button class="primary" type="submit">Свободные слоты</button>
+    </form>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}
